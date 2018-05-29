@@ -2,16 +2,11 @@ import re, json, knowledge
 import numpy as np
 from keras.preprocessing.sequence import pad_sequences
 
-DATA_PATH = '../data/'
-
-type_dict_fname = 'type_dict.json'
-word_dict_fname = 'word_dict.json'
-
-fd = open('type_dict.json', 'r')
+fd = open('scripts/type_dict.json', 'r')
 type_dict = json.load(fd)
 fd.close()
 
-fd = open('word_dict.json', 'r')
+fd = open('scripts/word_dict.json', 'r')
 word_dict = json.load(fd)
 fd.close()
 
@@ -192,22 +187,48 @@ def remove_mark(sent):
 # get file name of knowledge base
 def get_kb_fname(oov=False):
     if not oov:
-        return DATA_PATH + 'extendedkb1.txt'
-    return DATA_PATH + 'extendedkb2.txt'
+        return 'data/dataset-E2E-goal-oriented/extendedkb1.txt'
+    return 'data/dataset-E2E-goal-oriented-test-v1.0/extendedkb2.txt'
 
 
 # get file name of data
 def get_data_fname(task, trn=True, oov=False, unseen_slot=False):
     assert task in range(1, 6)
 
+    task_name = {
+        1: 'API',
+        2: 'REFINE',
+        3: 'OPTIONS',
+        4: 'INFOS',
+        5: 'FULL'
+    }
+
+    trn_path = 'data/dataset-E2E-goal-oriented/'
+    tst_path = 'data/dataset-E2E-goal-oriented-test-v1.0/'
+
     if trn:
-        return DATA_PATH + 'trn/task%d.json' % task
+        return trn_path + 'dialog-task%d%s-kb1_atmosphere-distr0.5-trn10000.json' % (task, task_name[task])
     else:
         if not oov and not unseen_slot:
-            return DATA_PATH + 'tst/tst1/task%d.json' % task
+            return tst_path + 'tst1/dialog-task%d%s-kb1_atmosphere-distr0.5-tst1000.json' % (task, task_name[task])
         if oov and not unseen_slot:
-            return DATA_PATH + 'tst/tst2/task%d.json' % task
+            return tst_path + 'tst2/dialog-task%d%s-kb2_atmosphere-distr0.5-tst1000.json' % (task, task_name[task])
         if not oov and unseen_slot:
-            return DATA_PATH + 'tst/tst3/task%d.json' % task
+            return tst_path + 'tst3/dialog-task%d%s-kb1_atmosphere_restrictions-distr0.5-tst1000.json' % (
+            task, task_name[task])
         if oov and unseen_slot:
-            return DATA_PATH + 'tst/tst4/task%d.json' % task
+            return tst_path + 'tst4/dialog-task%d%s-kb2_atmosphere_restrictions-distr0.5-tst1000.json' % (
+            task, task_name[task])
+
+
+def get_answer_fname(task, oov, unseen_slot):
+    assert task in range(1, 6)
+    fname = get_data_fname(task, trn=False, oov=oov, unseen_slot=unseen_slot)
+    return fname[:-4] + 'answers.json'
+
+
+def find_answer_utter(story, answer):
+    answer_cand_id = answer['lst_candidate_id'][0]['candidate_id']
+    for cand in story['candidates']:
+        if cand['candidate_id'] == answer_cand_id:
+            return cand['utterance']

@@ -2,36 +2,70 @@
 Jiyeon Ham, Soohyun Lim, Kyeng-Hun Lee, Kee-Eung Kim
 
 ### Getting started
-**Version info**
+#### Version info
+
 * Python 2.7
 * Keras 2.1.4
 
-**Train entity tracking module**
+#### Prerequisite
 
-    $ python main.py -t -et
+* Download dataset from https://github.com/perezjln/dstc6-goal-oriented-end-to-end
+* Make `data` directory and unzip the dataset
+* Make `weight` directory
 
-* -t: train
-* -et: entity tracking module
+Then tree veiw should be shown as:
 
-**Train action selector module**
+```
+├─data
+│  ├─dataset-E2E-goal-oriented
+│  └─dataset-E2E-goal-oriented-test-v1.0
+│      ├─tst1
+│      ├─tst2
+│      ├─tst3
+│      └─tst4
+├─scripts
+└─weight
+```
 
-    $ python main.py -t -as -ts 1
+#### Training
 
-* -t: train
-* -as: action selector module
-* -ts: task number to train
+run 	`scripts/main.py` with the following arguments:
 
-**Train entity output module**
+* `-t`: train
+* `-et`: entity tracking module
+* `-as`: action selector module
+* `-eo`: entity output module
+* `-ts`: task number to train (only used for action selector module)
 
-    $ python main.py -t -eo
+Train entity tracking module
 
-* -t: train
-* -eo: entity output module
+```bash
+$ python scripts/main.py -t -et
+```
 
-**Predict**
+Train action selector module for task 1
 
-    $ python main.py -us -oov -ts 1
+```bash
+$ python scripts/main.py -t -as -ts 1
+```
 
-* -ts: task number to predict
-* -us: test data with unseen slot
-* -oov: test data with out-of-vocabulary
+Train entity output module
+
+```bash
+$ python scripts/main.py -t -eo
+```
+
+#### Predict
+
+run `scripts/main.py` with the following arguments:
+
+* `-us`: test data with unseen slot
+* `-oov`: test data with out-of-vocabulary knowledge base
+* `-ts`: task number to predict
+
+Predict for task 1 with unseen slot and out-of-vocabulary
+
+```bash
+$ python main.py -us -oov -ts 1
+```
+

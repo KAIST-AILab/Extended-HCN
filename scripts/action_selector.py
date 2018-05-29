@@ -45,7 +45,7 @@ class ActionSelector:
 
     def train(self, task):
         fname = 'as_task%d.h5' % task
-        train_user_utter, train_context, train_bot_utter, train_y_utter = self.construct_train_data(task)
+        train_user_utter, train_context, train_bot_utter, train_y_utter = self.load_train_data(task)
 
         train_x = []
 
@@ -76,7 +76,7 @@ class ActionSelector:
         self.model.fit(train_x, train_y, batch_size=32, epochs=60, callbacks=[stop_callbacks, chekpoint],
                        validation_split=0.2, shuffle=True)
 
-    def construct_train_data(self, task):
+    def load_train_data(self, task):
         print ('Start to load training data for action selector module')
 
         train_user_utter = []

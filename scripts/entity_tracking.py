@@ -29,7 +29,7 @@ class EntityTracking:
 
     def train(self):
 
-        train_x, train_y = self.construct_train_data()
+        train_x, train_y = self.load_train_data()
 
         vector_x = util.get_multiple_sent_vector(train_x)
         vector_y = np.array(train_y)
@@ -41,7 +41,7 @@ class EntityTracking:
                        validation_split=0.2, shuffle=True)
 
     # construct training data
-    def construct_train_data(self):
+    def load_train_data(self):
         print('Start to load training data for entity tracking module')
         train_x = []
         train_y = []

@@ -100,7 +100,7 @@ class NextMention():
 
     def train(self):
 
-        train_x_utter, train_y = self.construct_train_data()
+        train_x_utter, train_y = self.load_train_data()
 
         train_x = util.get_multiple_sent_vector(train_x_utter)
         train_y = np.array(train_y)
@@ -118,7 +118,7 @@ class NextMention():
         ans_idx = np.argmax(prob)
         return self.answer_lst[ans_idx]
 
-    def construct_train_data(self):
+    def load_train_data(self):
         print ('Start to load training data for entity output module; next mention')
 
         fname = util.get_data_fname(task=3, trn=True)
@@ -192,7 +192,7 @@ class AcceptWhich():
 
     def train(self):
 
-        train_x_utter, train_y = self.construct_train_data()
+        train_x_utter, train_y = self.load_train_data()
 
         train_x = util.get_multiple_sent_vector(train_x_utter)
         train_y = np.array(train_y)
@@ -214,7 +214,7 @@ class AcceptWhich():
         else:
             return 'last_recommended'
 
-    def construct_train_data(self):
+    def load_train_data(self):
         print('Start to load training data for entity output module; accept which')
 
         fname = util.get_data_fname(task=5, trn=True)

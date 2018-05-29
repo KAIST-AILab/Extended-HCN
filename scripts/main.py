@@ -74,9 +74,7 @@ def main():
     oov = args.oov
     unseen_slot = args.unseen_slot
 
-    np.random.seed(2)
-
-    print args
+    np.random.seed(1)
 
     if args.train:
         if args.entity_track:
@@ -100,16 +98,23 @@ def main():
         json_data = json.load(fd)
         fd.close()
 
+        answer_fname = util.get_answer_fname(task, unseen_slot=unseen_slot, oov=oov)
+        fd = open(answer_fname, 'r')
+        answer_data = json.load(fd)
+        fd.close()
+
         api_order = knowledge.get_api_order(unseen_slot=unseen_slot)
         clr_order = knowledge.get_clr_order(unseen_slot=unseen_slot)
 
         correct_cnt = 0
-        for story in json_data:
+        for story, answer in zip(json_data, answer_data):
+
             if correct_cnt % 100 == 0:
                 print correct_cnt
             pred = model.predict_story(api_order, clr_order, story)
-            answer = util.remove_mark(story['answer']['utterance'])
-            if pred == answer:
+            ans_utter = util.find_answer_utter(story, answer)
+            ans_utter = util.remove_mark(ans_utter)
+            if pred == ans_utter:
                 correct_cnt += 1
             else:
                 for u in story['utterances']:
