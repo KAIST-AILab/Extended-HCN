@@ -6,14 +6,14 @@ Jiyeon Ham, Soohyun Lim, Kyeng-Hun Lee, Kee-Eung Kim
 * Python 2.7
 * Keras 2.1.4
 
-** Train entity tracking module
+**Train entity tracking module**
 
     $ python main.py -t -et
 
 * -t: train
 * -et: entity tracking module
 
-** Train action selector module
+**Train action selector module**
 
     $ python main.py -t -as -ts 1
 
@@ -21,14 +21,14 @@ Jiyeon Ham, Soohyun Lim, Kyeng-Hun Lee, Kee-Eung Kim
 * -as: action selector module
 * -ts: task number to train
 
-** Train entity output module
+**Train entity output module**
 
     $ python main.py -t -eo
 
 * -t: train
 * -eo: entity output module
 
-** Predict
+**Predict**
 
     $ python main.py -us -oov -ts 1
 
