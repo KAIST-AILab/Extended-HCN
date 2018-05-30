@@ -143,7 +143,7 @@ class NextMention:
             for idx, sent in enumerate(utterances):
                 y = [0, 0, 0]
 
-                ext_value, ext_sent = util.extract_sent(sent)
+                ext_value, _ = util.extract_sent(sent)
 
                 if '<R_name>' in ext_value.keys():
 
