@@ -74,7 +74,7 @@ class EntityOutput:
                 return act_template.replace('<R_address>', rest_name+'_address')
 
 
-class NextMention():
+class NextMention:
     def __init__(self):
         self.utter_max_words = util.utter_max_words
         self.voc_size = util.voc_size
@@ -143,35 +143,41 @@ class NextMention():
             for idx, sent in enumerate(utterances):
                 y = [0, 0, 0]
 
-                if 'what do you think of this option' in sent:
-                    recommend_idx += 1
+                ext_value, ext_sent = util.extract_sent(sent)
 
-                    request_utter_idx = idx - 1
-                    if utterances[request_utter_idx] == '<silence>':
-                        request_utter_idx -= 2
+                if '<R_name>' in ext_value.keys():
 
-                    if utterances[request_utter_idx] != '<silence>':
-                        _, ext_sent = util.extract_sent(utterances[request_utter_idx])
+                    # recommendation
+                    if knowledge.is_recommend(sent):
+                        recommend_idx += 1
+
+                        request_utter_idx = idx - 1
+                        if utterances[request_utter_idx] == '<silence>':
+                            request_utter_idx -= 2
+
+                        if utterances[request_utter_idx] != '<silence>':
+                            _, ext_sent = util.extract_sent(utterances[request_utter_idx])
+                            train_x.append(ext_sent)
+                            y[self.next_idx] = 1
+                            train_y.append(y)
+
+                    # only mention
+                    else:
+                        _, ext_sent = util.extract_sent(utterances[idx-1])
                         train_x.append(ext_sent)
-                        y[self.next_idx] = 1
+                        rest_name = sent.split()[-1]
+                        rest_idx = sorted_rest.index(rest_name)
+
+                        if rest_idx == 0:
+                            y[self.fst_idx] = 1
+                        if recommend_idx - rest_idx == 1:
+                            y[self.prev_idx] = 1
+                        assert y != [0, 0, 0]
                         train_y.append(y)
-
-                elif 'the option was the' in sent:
-                    _, ext_sent = util.extract_sent(utterances[idx-1])
-                    train_x.append(ext_sent)
-                    rest_name = sent.split()[-1]
-                    rest_idx = sorted_rest.index(rest_name)
-
-                    if rest_idx == 0:
-                        y[self.fst_idx] = 1
-                    if recommend_idx - rest_idx == 1:
-                        y[self.prev_idx] = 1
-                    assert y != [0, 0, 0]
-                    train_y.append(y)
         return train_x, train_y
 
 
-class AcceptWhich():
+class AcceptWhich:
     def __init__(self):
         self.utter_max_words = util.utter_max_words
         self.voc_size = util.voc_size

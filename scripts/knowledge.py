@@ -30,7 +30,8 @@ SYS_RES_TEMP_LST = [
 # {id: response}
 SYS_RES_TEMP_DICT = {k: v for v, k in enumerate(SYS_RES_TEMP_LST)}
 
-BLOCK_LIST = ['api_call']
+BLOCK_LIST = ['ok let me look into some options for you',
+              'api_call']
 
 
 BLOCK_VEC = [1 for i in SYS_RES_TEMP_LST]
@@ -65,6 +66,7 @@ def get_api_order(unseen_slot=False):
     return ['<R_cuisine>', '<R_location>', '<R_number>', '<R_price>', '<R_atmosphere>', '<R_restrictions>']
 
 
+# get action mask that is determined by the context feature
 def get_action_mask(context):
     if context == [1]:
         return NON_BLOCK_VEC
@@ -72,25 +74,28 @@ def get_action_mask(context):
         return BLOCK_VEC
 
 
-# determine if the story terminated
+# determine if the story is terminated
 def is_terminate(utterances):
     if 'you\'re welcome' in utterances:
         return True
     return False
 
 
+# determine if the system finds out that the user have accepted a recommendation
 def is_accepted(act_template):
     if 'great let me do the reservation' == act_template:
         return True
     return False
 
 
+# determine if the system recommends
 def is_recommend(act_template):
     if 'what do you think of this option' in act_template:
         return True
     return False
 
 
+# determine if the system response is containing any placeholder to be filled
 def is_contain_placeholder(act_template):
     if '<clarify>' == act_template or 'api_call' in act_template:
         return True

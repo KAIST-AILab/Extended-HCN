@@ -40,7 +40,7 @@ class EntityTracking:
         self.model.fit(vector_x, vector_y, batch_size=32, epochs=60, callbacks=[stop_callbacks, chekpoint],
                        validation_split=0.2, shuffle=True)
 
-    # construct training data
+    # load the training data
     def load_train_data(self):
         print('Start to load training data for entity tracking module')
         train_x = []
